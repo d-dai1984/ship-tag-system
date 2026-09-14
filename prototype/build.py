@@ -36,6 +36,6 @@ def markdown(s):
 shell=(root/'prototype/shell.html').read_text()
 payload=json.dumps({'requirements':requirements,'document':markdown(source)},ensure_ascii=False).replace('</','<\\/')
 result=shell.replace('/* STYLES */',(root/'prototype/styles.css').read_text()).replace('/* DOCUMENT */','const DOC='+payload+';').replace('/* APP */',(root/'prototype/app.js').read_text())
-dest=root/'船舶资产电子标签管理系统-交互原型-v0.1.html'
+dest=root/'prototype.html'
 dest.write_text(result)
 print(dest)
