@@ -344,13 +344,24 @@ id = 模块 slug + 功能名。配套在 `build.py` 里加了**构建期校验**
 
 ---
 
-## 在线发布（2026-09-14）
+## 在线发布（2026-09-15 更新）
 
-- 仓库：https://github.com/d-dai1984/ship-tag-system，已按用户要求公开。
-- 原型：https://d-dai1984.github.io/ship-tag-system/prototype.html
-- 产品结构：https://d-dai1984.github.io/ship-tag-system/product-structure.html
-- 发布源：`main` 分支根目录；`index.html` 跳转原型，`.nojekyll` 保持静态文件直出。
-- 两个旧中文文件为兼容跳转页，请勿继续编辑为正式页面；原型构建输出已改为 `prototype.html`。
+- 仓库：https://github.com/d-dai1984/ship-tag-system ，**公开仓库**。
+- 入口页：https://d-dai1984.github.io/ship-tag-system/
+- 管理后台原型：https://d-dai1984.github.io/ship-tag-system/prototype.html
+- 点检员移动端：https://d-dai1984.github.io/ship-tag-system/mobile.html
+- 产品结构说明：https://d-dai1984.github.io/ship-tag-system/product-structure.html
+- 发布源：`main` 分支根目录；`.nojekyll` 保持静态文件直出。`index.html` 已改为三个入口的导航页，不再自动跳转。
+- 两个旧中文文件为兼容跳转页，请勿继续编辑为正式页面。
+
+**本地工作目录不是 git 仓库**。提交方式：把仓库 clone 到临时目录，复制文件进去再提交推送。git 身份用全局配置的 `d-dai1984 / youthadster@gmail.com`，凭证在 macOS 钥匙串。
+
+**不上传到公开仓库的内容**（见 `.gitignore`）：
+
+- `docs/*.pdf` —— 三份厂商与技术参考原始资料。
+- `docs/参考-*.md` —— 含外部 AI 对话原文的参考存档。仓库是公开的，这类原文默认不发布；需要随仓库分发时删掉该行即可。
+
+最近一次提交：`0f7314f` Migrate prototypes to v0.4（21 个文件，+3187 / -327）。
 
 ## 1. 接手先看这里
 
