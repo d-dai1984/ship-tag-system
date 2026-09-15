@@ -7,3 +7,7 @@ __pycache__/
 
 # Original vendor and technical reference PDFs remain local.
 docs/*.pdf
+
+# 原始参考资料（含外部 AI 对话原文）保留在本地，不发布到公开仓库。
+# 需要随仓库分发时，删掉下面这行即可。
+docs/参考-*.md

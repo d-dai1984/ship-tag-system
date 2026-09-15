@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>点检员移动端 · 交互原型</title><style>/* STYLES */</style></head>
+<body>
+<a class="skip" href="#screen">跳到主要内容</a>
+<div class="stage">
+ <aside class="stage-side">
+  <a class="stage-brand" href="prototype.html"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M4 19l12 5 12-5-3 8H7L4 19zM9 19V9h14v10M13 9V5h6v4M4 30h24M13 13h6M13 16h6" stroke="currentColor" stroke-width="1.5"/></svg><span>船舶资产<strong>智能点检标签</strong></span></a>
+  <h1>点检员移动端</h1>
+  <p class="stage-copy">对应产品文档 v0.4 第 5.6 节。针对深舱无网、戴手套作业、环境油污的一线场景，做「极简、防假检、秒级闭环」的现场工具。</p>
+  <div class="stage-warn"><strong>这一整套都压在一个未证明的前提上</strong><p>碰一碰、免密唤起、防假检全部依赖标签 NFC，而候选机 STag29AQ 规格书里 NFC 仅标为「可选」，没有给芯片型号、NDEF 能力与防克隆方案。本原型用「手动选标签」模拟碰一碰，<b>不构成 NFC 可用的证据</b>。</p></div>
+  <div class="stage-links"><a href="prototype.html">管理后台原型 ↗</a><a href="product-structure.html">产品结构说明 ↗</a></div>
+  <p class="stage-foot">单文件 HTML · 可离线打开 · 所有数据与执行结果均为模拟</p>
+ </aside>
+ <div class="phone-wrap">
+  <div class="phone">
+   <div class="phone-top"><span id="clock">09:41</span><span class="phone-net" id="netbar"></span></div>
+   <main id="screen" tabindex="-1"></main>
+   <nav class="tabbar" id="tabbar" aria-label="底部导航"></nav>
+  </div>
+  <p class="phone-hint">桌面上按 390 × 844 显示；用手机打开则为全屏。</p>
+ </div>
+</div>
+<div id="sheet" class="sheet" hidden><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="sheet-head"><h2 id="sheet-title"></h2><button class="icon-btn" data-action="sheet-close" aria-label="关闭">×</button></div><div id="sheet-body"></div></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>/* DOCUMENT */
+/* APP */</script>
+</body></html>

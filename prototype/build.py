@@ -1,41 +1,43 @@
+"""把 v0.4 产品文档、样式和脚本打包成单文件交互原型。
+
+需求提取按 **id 键**（模块 slug / 功能名），不再用零起始索引：
+调整表格顺序、插入或删除行都不会让映射错位；改功能名会在构建时直接报错。
+解析逻辑在 docparse.py，与结构说明页共用。
+"""
 from pathlib import Path
-import re,json,html
-root=Path(__file__).resolve().parent.parent
-source=(root/'船舶资产电子标签管理系统-产品需求大纲-v0.1.md').read_text()
-sections=re.split(r'### 4\.\d ',source)[1:]
-requirements=[]
-for s in sections:
- s=s.split('\n## ')[0]
- requirements.append([{'title':a.strip(),'text':b.strip()} for a,b in re.findall(r'^\| ([^|]+) \| ([^|]+) \|$',s,re.M) if a.strip()!='功能'])
-def markdown(s):
- lines=s.splitlines();out=[];table=False;code=False;items=False
- def inline(v):
-  v=html.escape(v)
-  return re.sub(r'`([^`]+)`',r'<code>\1</code>',v)
- for line in lines:
-  if line.startswith('```'):
-   out.append('</pre>' if code else '<pre>');code=not code;continue
-  if code:out.append(html.escape(line)+'\n');continue
-  if table and not line.startswith('|'):out.append('</tbody></table></div>');table=False
-  if items and not line.startswith('- '):out.append('</ul>');items=False
-  if line.startswith('|'):
-   if re.match(r'^\|[\s:|\-]+$',line):continue
-   cells=line.strip('|').split('|')
-   if not table:out.append('<div class="doc-table"><table><tbody>');table=True
-   out.append('<tr>'+''.join('<td>'+inline(c.strip())+'</td>' for c in cells)+'</tr>');continue
-  if not line.strip():continue
-  if line.startswith('- '):
-   if not items:out.append('<ul>');items=True
-   out.append('<li>'+inline(line[2:])+'</li>');continue
-  m=re.match(r'^(#{1,4}) (.+)',line)
-  if m:out.append(f'<h{len(m[1])}>{inline(m[2])}</h{len(m[1])}>')
-  else:out.append('<p>'+inline(line)+'</p>')
- if table:out.append('</tbody></table></div>')
- if items:out.append('</ul>')
- return ''.join(out)
-shell=(root/'prototype/shell.html').read_text()
-payload=json.dumps({'requirements':requirements,'document':markdown(source)},ensure_ascii=False).replace('</','<\\/')
-result=shell.replace('/* STYLES */',(root/'prototype/styles.css').read_text()).replace('/* DOCUMENT */','const DOC='+payload+';').replace('/* APP */',(root/'prototype/app.js').read_text())
-dest=root/'prototype.html'
+import json, re, sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import docparse
+
+root = docparse.ROOT
+source = docparse.source()
+requirements = docparse.extract(source)
+app = (root / 'prototype/app.js').read_text()
+
+# 构建期校验：只扫这三个块，避免把 route 字符串（'labels/data' 这类）误当成需求 id。
+def block(text, start, end):
+    i = text.index(start)
+    return text[i:text.index(end, i)]
+
+referenced = set(re.findall(r"'([^']+)'", block(app, 'const coverage={', '\nconst reqSection=')))
+referenced |= set(re.findall(r"'([^']+)':\{", block(app, 'const requirementDemos={', '\nconst sketchReqs=')))
+referenced |= set(re.findall(r"'([^']+)'", block(app, 'const sketchReqs=', ');')))
+
+missing = sorted(r for r in referenced if r not in requirements)
+if missing:
+    sys.exit('app.js 引用了文档中不存在的需求 id：\n  ' + '\n  '.join(missing)
+             + '\n提示：功能名改了就要同步改 app.js，或反过来。')
+
+payload = json.dumps({'requirements': {k: {kk: vv for kk, vv in v.items() if kk != 'slug'}
+                                       for k, v in requirements.items()},
+                      'document': docparse.markdown(source), 'version': 'v0.4'},
+                     ensure_ascii=False).replace('</', '<\\/')
+shell = (root / 'prototype/shell.html').read_text()
+result = (shell
+          .replace('/* STYLES */', (root / 'prototype/styles.css').read_text())
+          .replace('/* DOCUMENT */', 'const DOC=' + payload + ';')
+          .replace('/* APP */', app))
+dest = root / 'prototype.html'
 dest.write_text(result)
-print(dest)
+print(f'{dest}\n需求 {len(requirements)} 条；原型引用 {len(referenced)} 条；'
+      f'未引用 {len(set(requirements) - referenced)} 条（移动端、二期等尚未实现）')

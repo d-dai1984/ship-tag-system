@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>点检员移动端 · 交互原型</title><style>:root{--ink:#213c49;--muted:#647881;--line:#dde5e6;--bg:#f3f6f7;--paper:#fff;--green:#126b60;--pale:#edf5f1;--amber:#945c11;--red:#ad4343;--font:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 var(--font);background:#e7ecee;color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #db963c;outline-offset:2px}
+h1,h2,h3,p{margin:0}
+.skip{position:fixed;top:-80px;left:10px;z-index:100;background:#fff;padding:12px}.skip:focus{top:5px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+/* ---- 桌面舞台 ---- */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:40px;max-width:1160px;margin:0 auto;padding:46px 30px 60px;align-items:start}
+.stage-side{position:sticky;top:46px}
+.stage-brand{display:flex;gap:11px;align-items:center;font-size:11px;letter-spacing:.09em;color:var(--muted);margin-bottom:26px}
+.stage-brand strong{display:block;font-size:16px;letter-spacing:0;color:var(--ink);font-weight:600}
+.stage-brand svg{width:29px;height:35px;color:var(--green)}
+.stage-side h1{font-size:30px;font-weight:640;letter-spacing:-.03em;margin-bottom:12px}
+.stage-copy{font-size:13px;color:#4f6871;max-width:52ch}
+.stage-warn{margin:24px 0;padding:16px 18px;background:#fdf6e9;border:1px solid #ecdcba;border-radius:8px}
+.stage-warn strong{display:block;font-size:12px;color:#8a6a1c;margin-bottom:6px}
+.stage-warn p{font-size:11.5px;line-height:1.85;color:#77673c}
+.stage-warn b{color:#6d5411}
+.stage-links{display:flex;gap:10px;flex-wrap:wrap}
+.stage-links a{font-size:12px;border:1px solid #cddada;background:#fff;border-radius:5px;padding:8px 13px}
+.stage-links a:hover{background:var(--pale);border-color:#9ebbb1}
+.stage-foot{margin-top:22px;font-size:10px;color:var(--muted)}
+/* ---- 手机 ---- */
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.phone{width:390px;height:844px;background:var(--bg);border:10px solid #1d3138;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 70px #16323d33;position:relative}
+.phone-top{height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:11px;font-weight:600;background:var(--paper);border-bottom:1px solid var(--line)}
+.phone-net{font-size:10px;font-weight:500;display:flex;align-items:center;gap:5px}
+.phone-net i{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.phone-net.off{color:var(--amber)}.phone-net.off i{background:#c08a2a}
+#screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 16px 24px;-webkit-overflow-scrolling:touch}
+.phone-hint{font-size:10px;color:var(--muted)}
+.tabbar{flex-shrink:0;display:flex;background:var(--paper);border-top:1px solid var(--line);padding:6px 4px 10px}
+.tabbar button{flex:1;border:0;background:none;color:var(--muted);font-size:10px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:7px}
+.tabbar button strong{font-size:16px;line-height:1;font-weight:400}
+.tabbar button.active{color:var(--green)}
+.tabbar button .dot{position:absolute;margin:-4px 0 0 16px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+/* ---- 通用 ---- */
+.screen-head{margin-bottom:16px}
+.screen-head h2{font-size:21px;font-weight:640;letter-spacing:-.02em}
+.screen-head p{font-size:11.5px;color:var(--muted);margin-top:4px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:12px}
+.card h3{font-size:13px;font-weight:600;margin-bottom:8px}
+.card p{font-size:11.5px;color:#54707a;line-height:1.8}
+.pill{display:inline-block;border-radius:4px;padding:2px 7px;background:var(--pale);color:var(--green);font-size:10px;line-height:1.7;white-space:nowrap}
+.pill.warn{background:#fcf2dc;color:var(--amber)}.pill.bad{background:#faeceb;color:#a84040}
+.pill.neutral{background:#edf1f4;color:#687b86}.pill.blue{background:#eaf2fa;color:#366d9b}
+.btn{display:block;width:100%;border:1px solid #cddada;background:#fff;color:var(--ink);padding:13px;border-radius:9px;font-size:14px;text-align:center;line-height:1.4}
+.btn.primary{background:var(--green);border-color:var(--green);color:#f3fbf6;font-weight:500}
+.btn.danger{color:var(--red);border-color:#e2baba}
+.btn+.btn{margin-top:9px}
+.btn:disabled{opacity:.45}
+.btn-row{display:flex;gap:9px}.btn-row .btn{margin-top:0}
+.nfc{background:linear-gradient(160deg,#17544c,#0f3b3a);color:#eafaf3;border:0;border-radius:16px;padding:26px 20px;width:100%;text-align:left;margin-bottom:12px;position:relative;overflow:hidden}
+.nfc strong{display:block;font-size:18px;font-weight:600;margin-bottom:5px}
+.nfc span{font-size:11.5px;color:#a9d8c9;line-height:1.75;display:block}
+.nfc .wave{position:absolute;right:-24px;top:50%;transform:translateY(-50%);width:120px;height:120px;border-radius:50%;border:2px solid #2d7a68;opacity:.55}
+.nfc .wave.w2{width:170px;height:170px;opacity:.3}
+.row{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row-main{flex:1;min-width:0}
+.row-main strong{display:block;font-size:13px;font-weight:550}
+.row-main small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.6}
+.mark{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;background:var(--pale);color:var(--green)}
+.mark.warn{background:#fcf2dc;color:var(--amber)}.mark.bad{background:#faeceb;color:var(--red)}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.stat-box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center}
+.stat-box strong{display:block;font-size:22px;font-weight:600;line-height:1.3}
+.stat-box span{font-size:10px;color:var(--muted)}
+.stat-box.bad strong{color:var(--red)}.stat-box.warn strong{color:var(--amber)}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;border:1px solid #ccd8db;border-radius:8px;padding:11px;background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:76px}
+.check{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.check:last-of-type{border-bottom:0}
+.check input{width:19px;height:19px;accent-color:var(--green);margin-top:1px;flex-shrink:0}
+.check .ck-main{flex:1}
+.check .ck-bad{border:1px solid #e2baba;background:#fff;color:var(--red);border-radius:6px;font-size:10px;padding:3px 8px}
+.check .ck-bad.on{background:var(--red);color:#fff;border-color:var(--red)}
+.hint{background:#edf4f6;border:1px solid #d8e5e9;border-radius:8px;padding:11px 13px;font-size:11px;color:#54727e;line-height:1.8;margin-bottom:12px}
+.hint.warn{background:#fcf7e9;border-color:#eadebc;color:#8c712b}
+.hint.bad{background:#faeeed;border-color:#e6c9c7;color:#8f4040}
+.photo{border:1px dashed #c3d1d4;border-radius:9px;padding:18px;text-align:center;font-size:11.5px;color:var(--muted);background:#fbfcfc}
+.photo.on{border-style:solid;border-color:var(--green);background:var(--pale);color:var(--green)}
+.eink{background:#faf9f2;color:#182227;border:1px solid #d5d9d3;border-radius:4px;padding:11px;height:118px;position:relative;overflow:hidden;transition:background .25s}
+.eink .top{font-size:9.5px;border-bottom:2px solid #202020;padding-bottom:4px;display:flex;justify-content:space-between}
+.eink .nm{font-size:17px;font-weight:650;margin-top:6px;line-height:1.35}
+.eink .sub{font-size:9.5px;margin-top:3px;color:#40535c}
+.eink .btm{font-size:9px;position:absolute;left:11px;right:11px;bottom:9px;display:flex;justify-content:space-between}
+.eink.overdue{background:#fff}
+.eink.overdue .bar{background:#b3241f;color:#fff;font-size:10px;font-weight:600;padding:3px 7px;margin:-11px -11px 7px;text-align:center}
+.led{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:10px}
+.led i{width:11px;height:11px;border-radius:50%;background:#cfd8d8;display:inline-block}
+.led i.green{background:#2f9e5f;box-shadow:0 0 9px #2f9e5f}
+.led i.red{background:#c23b31;box-shadow:0 0 9px #c23b31;animation:blink .7s steps(1) infinite}
+.led i.amber{background:#d59b2c;box-shadow:0 0 9px #d59b2c;animation:blink 1.6s steps(1) infinite}
+@keyframes blink{50%{opacity:.25;box-shadow:none}}
+.done-wrap{text-align:center;padding:14px 0 6px}
+.done-ring{width:78px;height:78px;border-radius:50%;background:var(--pale);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 14px}
+.chain{margin:14px 0 0;padding:0;list-style:none}
+.chain li{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);text-align:left}
+.chain li:last-child{border-bottom:0}
+.chain .st{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;background:#e9eef0;color:#8b9ca2;margin-top:1px}
+.chain .st.ok{background:var(--pale);color:var(--green)}
+.chain .st.wait{background:#fcf2dc;color:var(--amber)}
+.chain strong{display:block;font-size:12.5px;font-weight:550}
+.chain small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.6}
+.req-item{padding:13px 0;border-bottom:1px solid var(--line)}
+.req-item:last-child{border-bottom:0}
+.req-item .no{font-size:9.5px;letter-spacing:.06em;color:var(--green)}
+.req-item h3{font-size:12.5px;margin:3px 0 5px}
+.req-item p{font-size:11px;line-height:1.8;color:#5b7078}
+.tag{display:inline-block;font-size:9.5px;border:1px solid #c3d8ca;background:var(--pale);color:var(--green);padding:2px 6px;border-radius:3px;margin-top:8px}
+.tag.plan{background:#f1f4f5;color:#7c8c94;border-color:#dde4e6}
+.tag.dep{background:#faeceb;color:#a84040;border-color:#e6c9c7}
+.empty{padding:34px 12px;text-align:center;color:var(--muted);font-size:12px}
+.icon-btn{background:transparent;border:0;color:var(--muted);font-size:22px;line-height:1;padding:4px 8px}
+.sheet{position:fixed;inset:0;background:#102f3a55;display:flex;align-items:flex-end;justify-content:center;z-index:60}
+.sheet[hidden]{display:none}
+[hidden]{display:none!important}
+.sheet-panel{background:#fff;width:min(430px,100%);max-height:84vh;overflow:auto;border-radius:16px 16px 0 0;padding:0 18px 22px}
+.sheet-head{position:sticky;top:0;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:16px 0 12px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.sheet-head h2{font-size:16px}
+#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,14px);background:#193f38;color:#f2faf3;font-size:12px;padding:11px 18px;border-radius:7px;z-index:80;max-width:calc(100vw - 36px);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:1040px){.stage{grid-template-columns:1fr;gap:26px;padding:30px 20px 40px}.stage-side{position:static}.phone-wrap{align-items:stretch}.phone{width:100%;max-width:430px;margin:0 auto}}
+@media(max-width:560px){body{background:var(--bg)}.stage{padding:0;gap:0}.stage-side{padding:22px 18px 4px}.stage-side h1{font-size:23px}.phone{width:100%;max-width:none;height:auto;min-height:74vh;border:0;border-radius:0;box-shadow:none}.phone-hint{display:none}.phone-wrap{gap:0}}
+</style></head>
+<body>
+<a class="skip" href="#screen">跳到主要内容</a>
+<div class="stage">
+ <aside class="stage-side">
+  <a class="stage-brand" href="prototype.html"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M4 19l12 5 12-5-3 8H7L4 19zM9 19V9h14v10M13 9V5h6v4M4 30h24M13 13h6M13 16h6" stroke="currentColor" stroke-width="1.5"/></svg><span>船舶资产<strong>智能点检标签</strong></span></a>
+  <h1>点检员移动端</h1>
+  <p class="stage-copy">对应产品文档 v0.4 第 5.6 节。针对深舱无网、戴手套作业、环境油污的一线场景，做「极简、防假检、秒级闭环」的现场工具。</p>
+  <div class="stage-warn"><strong>这一整套都压在一个未证明的前提上</strong><p>碰一碰、免密唤起、防假检全部依赖标签 NFC，而候选机 STag29AQ 规格书里 NFC 仅标为「可选」，没有给芯片型号、NDEF 能力与防克隆方案。本原型用「手动选标签」模拟碰一碰，<b>不构成 NFC 可用的证据</b>。</p></div>
+  <div class="stage-links"><a href="prototype.html">管理后台原型 ↗</a><a href="product-structure.html">产品结构说明 ↗</a></div>
+  <p class="stage-foot">单文件 HTML · 可离线打开 · 所有数据与执行结果均为模拟</p>
+ </aside>
+ <div class="phone-wrap">
+  <div class="phone">
+   <div class="phone-top"><span id="clock">09:41</span><span class="phone-net" id="netbar"></span></div>
+   <main id="screen" tabindex="-1"></main>
+   <nav class="tabbar" id="tabbar" aria-label="底部导航"></nav>
+  </div>
+  <p class="phone-hint">桌面上按 390 × 844 显示；用手机打开则为全屏。</p>
+ </div>
+</div>
+<div id="sheet" class="sheet" hidden><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="sheet-head"><h2 id="sheet-title"></h2><button class="icon-btn" data-action="sheet-close" aria-label="关闭">×</button></div><div id="sheet-body"></div></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>const DOC={"requirements": {"mobile/NFC 碰一碰唤起": {"title": "NFC 碰一碰唤起", "text": "需求：无需预先打开 App，手机背部轻碰标签，自动弹窗直达该设备点检表单 · 依赖：❌ 强依赖标签 NFC，当前为可选项", "section": "5.6 移动端", "no": 1}, "mobile/防假检机制": {"title": "防假检机制", "text": "需求：从物理层杜绝远程代打卡 · 依赖：❌ 需 NDEF Token 防克隆方案，未证明", "section": "5.6 移动端", "no": 2}, "mobile/离线作业": {"title": "离线作业", "text": "需求：碰一碰后从本地缓存调出表单，离线填报并拍照存证 · 依赖：⚠️ 需定义缓存范围、容量、有效期", "section": "5.6 移动端", "no": 3}, "mobile/自动补传": {"title": "自动补传", "text": "需求：走出到有 Wi-Fi/5G 区域后自动补传打卡流水 · 依赖：⚠️ 需定义幂等键、冲突规则、补传状态", "section": "5.6 移动端", "no": 4}, "mobile/标准化防呆表单": {"title": "标准化防呆表单", "text": "需求：按设备类型自动加载作业清单；异常项强制拍照并填写描述；支持预设故障标签快选 · 依赖：✅", "section": "5.6 移动端", "no": 5}, "mobile/即时物理闭环反馈": {"title": "即时物理闭环反馈", "text": "需求：提交成功瞬间调度现场标签：变回正常模板、截止日期后移、绿灯常亮 3 秒 · 依赖：⚠️ 弱网/离线下无法保证\"即时\"，须定义超时与最终一致性", "section": "5.6 移动端", "no": 6}, "mobile/一键故障报修": {"title": "一键故障报修", "text": "需求：勾选转报修工单，标记设备\"故障报修中\"，向维保班组长推送派工消息与现场照片 · 依赖：⚠️ 需定义工单状态机与通知通道", "section": "5.6 移动端", "no": 7}}, "status": {"mobile/NFC 碰一碰唤起": "dep", "mobile/防假检机制": "dep", "mobile/离线作业": "ok", "mobile/自动补传": "ok", "mobile/标准化防呆表单": "ok", "mobile/即时物理闭环反馈": "ok", "mobile/一键故障报修": "ok"}, "version": "v0.4"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=p=>p+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6);
+
+// ---- 两个独立缓存域 ----
+// 业务数据与管理后台原型共用（同源部署时是同一份）；手机离线队列单独存，
+// 因为「离线移动端」与「离线网关」本来就是两个互不相关的缓存域，不能混为一谈。
+const STORE='ship-tag-prototype-v1', MSTORE='ship-tag-mobile-v1';
+let db=null, mb={online:true,queue:[]}, storageOK=true;
+function loadDB(){try{const v=JSON.parse(localStorage.getItem(STORE));if(v&&v.version===4)return v;}catch{}return null;}
+function loadMB(){try{const v=JSON.parse(localStorage.getItem(MSTORE));if(v&&v.version===1)return v;}catch{}return {version:1,online:true,queue:[]};}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(db));localStorage.setItem(MSTORE,JSON.stringify(mb));}catch{storageOK=false;}}
+
+// 管理后台没跑过时用的最小示例数据，字段与 v4 结构一致。
+const fallback=()=>({version:4,demoNow:'2026-09-15 10:00:00',ship:{name:'海澜 01',code:'H2601'},
+ dirs:[{id:'d1',name:'分段 E101 · 机舱分段',parent:'root'},{id:'d2',name:'主机舱',parent:'d1'},{id:'d3',name:'燃油供给部位',parent:'d2'},{id:'d4',name:'滑油系统部位',parent:'d2'},{id:'d5',name:'辅机舱',parent:'d1'},{id:'d6',name:'发电机组部位',parent:'d5'},{id:'d7',name:'分段 H201 · 货舱双层底',parent:'root'},{id:'d8',name:'双层底舱室',parent:'d7'},{id:'d9',name:'压载系统部位',parent:'d8'},{id:'d10',name:'分段 L301 · 上层建筑',parent:'root'},{id:'d11',name:'驾驶室',parent:'d10'},{id:'d12',name:'导航设备部位',parent:'d11'},{id:'d13',name:'配电间',parent:'d10'},{id:'d14',name:'分段 F401 · 首部',parent:'root'},{id:'d15',name:'锚链舱',parent:'d14'}],
+ assets:[{id:'a1',code:'FO-001',name:'燃油输送泵 A',model:'CB-B40',dir:'d3',team:'轮机一组',owner:'张工',cycle:7,lastCheck:'2026-09-13 09:00:00',fault:false},
+ {id:'a2',code:'FO-002',name:'燃油输送泵 B',model:'CB-B40',dir:'d3',team:'轮机一组',owner:'张工',cycle:7,lastCheck:'2026-09-08 20:00:00',fault:false},
+ {id:'a3',code:'LO-001',name:'滑油泵',model:'ISW80',dir:'d4',team:'轮机二组',owner:'李工',cycle:7,lastCheck:'2026-09-06 10:00:00',fault:false},
+ {id:'a4',code:'LO-002',name:'滑油滤器',model:'BR0.5',dir:'d4',team:'轮机二组',owner:'李工',cycle:30,lastCheck:'2026-09-01 09:00:00',fault:false},
+ {id:'a5',code:'DG-001',name:'主发电机',model:'CCFJ120',dir:'d6',team:'电气组',owner:'陈工',cycle:30,lastCheck:'2026-08-10 08:00:00',fault:true},
+ {id:'a6',code:'BW-001',name:'压载泵',model:'CLH150',dir:'d9',team:'轮机二组',owner:'李工',cycle:7,lastCheck:'2026-09-14 16:00:00',fault:false},
+ {id:'a7',code:'NV-001',name:'导航雷达',model:'JMA-5312',dir:'d12',team:'电气组',owner:'陈工',cycle:30,lastCheck:'2026-09-14 11:00:00',fault:false},
+ {id:'a8',code:'EL-001',name:'主配电柜',model:'MNS',dir:'d13',team:'电气组',owner:'陈工',cycle:7,lastCheck:'2026-09-09 02:00:00',fault:false},
+ {id:'a9',code:'AN-001',name:'锚机',model:'YM-32',dir:'d15',team:'甲板组',owner:'王工',cycle:7,lastCheck:null,fault:false}],
+ labels:[{id:'l1',mac:'C8:29:01:00:00:01',asset:'a1',online:true,battery:86,rssi:-56,version:1,published:1,last:'2026-09-15 09:40:02',state:'active'},
+ {id:'l2',mac:'C8:29:01:00:00:02',asset:'a2',online:true,battery:72,rssi:-64,version:2,published:1,last:'2026-09-15 09:40:05',state:'active'},
+ {id:'l3',mac:'C8:29:01:00:00:03',asset:'a3',online:false,battery:55,rssi:-89,version:2,published:1,last:'2026-09-13 17:12:40',state:'active'},
+ {id:'l4',mac:'C8:29:01:00:00:04',asset:'a4',online:true,battery:12,rssi:-67,version:1,published:1,last:'2026-09-15 09:39:51',state:'active'},
+ {id:'l5',mac:'C8:29:01:00:00:05',asset:'a5',online:true,battery:92,rssi:-60,version:1,published:1,last:'2026-09-15 09:40:10',state:'active'},
+ {id:'l6',mac:'C8:29:01:00:00:06',asset:'a6',online:true,battery:65,rssi:-85,version:1,published:1,last:'2026-09-15 09:38:16',state:'active'},
+ {id:'l7',mac:'C8:29:01:00:00:07',asset:'a7',online:true,battery:78,rssi:-63,version:1,published:1,last:'2026-09-15 09:40:12',state:'active'}],
+ inspections:[],logs:[],settings:{low:20,weak:-80,offline:30,refresh:5,dueSoon:24}});
+
+db=loadDB()||fallback(); mb=loadMB();
+if(!db.inspections)db.inspections=[];
+let usedFallback=!loadDB();
+
+// ---- 派生：与管理后台同一套口径 ----
+const HOUR=3600000,DAY=86400000;
+const tms=t=>t?new Date(String(t).replace(/-/g,'/')).getTime():0;
+const nowMs=()=>tms(db.demoNow);
+const asset=id=>db.assets.find(a=>a.id===id);
+const dir=id=>db.dirs.find(d=>d.id===id);
+const labelFor=a=>db.labels.find(l=>l.asset===a?.id);
+const path=id=>{const d=dir(id);return d?(d.parent==='root'?d.name:path(d.parent)+' / '+d.name):'Hull No. '+db.ship.code;};
+const dueMs=a=>a.lastCheck?tms(a.lastCheck)+(a.cycle||30)*DAY:0;
+const dueText=a=>a.lastCheck?new Date(dueMs(a)).toLocaleString('zh-CN',{hour12:false}):'—';
+const checkState=a=>{if(!a.lastCheck)return 'never';const gap=dueMs(a)-nowMs();return gap<0?'overdue':gap<=db.settings.dueSoon*HOUR?'due':'normal';};
+const overdueH=a=>Math.max(0,Math.round((nowMs()-dueMs(a))/HOUR));
+const dueInH=a=>Math.round((dueMs(a)-nowMs())/HOUR);
+const CHECK={normal:['正常',''],due:['临期','warn'],overdue:['逾期','bad'],never:['未点检','neutral']};
+const pill=(t,k='')=>`<span class="pill ${k}">${esc(t)}</span>`;
+const stateNote=a=>{const s=checkState(a);return s==='overdue'?'已超期 '+overdueH(a)+' 小时':s==='due'?'剩余 '+dueInH(a)+' 小时':s==='never'?'尚未首次点检':'截止 '+dueText(a);};
+const queued=id=>mb.queue.some(q=>q.asset===id&&q.uploaded!==true);
+
+// 按设备类型加载检查项：防呆表单的核心，避免用一张万能表单糊弄所有设备。
+const LISTS=[[/泵/,['外观与铭牌完好','无异常渗漏','轴承温度正常','运转无异响','地脚螺栓紧固']],
+ [/发电机/,['外观与铭牌完好','绝缘罩完好','冷却水位正常','无异常振动','接地线可靠']],
+ [/雷达|导航|GPS/,['天线座无锈蚀','电缆接头密封','显示屏显示正常','固定螺栓紧固']],
+ [/配电|电柜/,['柜门关闭良好','无异味与放电痕迹','指示灯正常','接地可靠']],
+ [/锚机|绞|舵/,['刹车带磨损在范围内','液压系统无渗漏','链轮无裂纹','润滑到位']],
+ [/滤器|滤/,['壳体无渗漏','压差在允许范围','密封圈完好']]];
+const checklist=a=>(LISTS.find(([re])=>re.test(a.name))||[null,['外观完好','标识清晰','无异常声响','固定可靠']])[1];
+
+// ---- 状态 ----
+let view='home', current=null, form=null, doneRec=null, sheetOpen=false;
+const toastEl=$('#toast');let toastTimer;
+function toast(t){toastEl.textContent=t;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2600);}
+function go(v){view=v;render();$('#screen').scrollTop=0;}
+
+// ================= 首页 =================
+function home(){const mine=db.assets;
+ const ov=mine.filter(a=>['overdue','never'].includes(checkState(a))),due=mine.filter(a=>checkState(a)==='due');
+ const pend=mb.queue.filter(q=>!q.uploaded);
+ const list=[...ov,...due].map(a=>{const st=checkState(a),q=queued(a.id);
+  return `<button class="row" data-act="open" data-id="${a.id}" style="width:100%;border:0;background:none;text-align:left">
+   <span class="mark ${st==='due'?'warn':'bad'}">${st==='due'?'!':'⚠'}</span>
+   <span class="row-main"><strong>${esc(a.name)}</strong><small>${esc(path(a.dir))}</small><small>${esc(stateNote(a))}</small></span>
+   ${q?pill('待补传','warn'):pill(CHECK[st][0],CHECK[st][1])}</button>`;}).join('');
+ return `<div class="screen-head"><h2>今日点检</h2><p>${esc(db.ship.name)} · Hull No. ${esc(db.ship.code)} · 基准时间 ${esc(db.demoNow)}</p></div>
+ ${usedFallback?`<div class="hint warn">未读到管理后台的演示数据，当前使用内置示例。若要两端联动，请从同一来源打开管理后台原型并保持同源。</div>`:''}
+ ${!mb.online?`<div class="hint warn"><strong>当前处于离线模式</strong><br>深舱、双层底通常完全无网络覆盖。此时点检照常进行，记录先存在手机本地，走到有信号处再自动补传。</div>`:''}
+ <button class="nfc" data-act="tap"><span class="wave"></span><span class="wave w2"></span>
+  <strong>碰一碰标签开始点检</strong>
+  <span>无需预先打开 App，手机背部轻碰标签即可直达该设备的点检表单。本原型用手动选标签模拟。</span></button>
+ <div class="stat-row">
+  <div class="stat-box bad"><strong>${ov.length}</strong><span>逾期</span></div>
+  <div class="stat-box warn"><strong>${due.length}</strong><span>临期</span></div>
+  <div class="stat-box"><strong>${pend.length}</strong><span>待补传</span></div></div>
+ ${pend.length?`<button class="btn" data-act="queue" style="margin-bottom:12px">查看 ${pend.length} 条待补传记录 →</button>`:''}
+ <div class="card"><h3>待办设备</h3>${list||'<p class="empty">当前没有逾期或临期设备</p>'}</div>
+ <div class="card"><h3>防假检：这套机制成不成立</h3>
+  <ul class="chain">
+   <li><span class="st wait">?</span><div><strong>NFC 近场证明「人在设备旁」</strong><small>候选机 NFC 仅为可选项，未给芯片型号与防克隆方案 —— <b>未落实</b></small></div></li>
+   <li><span class="st ok">✓</span><div><strong>登录身份 + 提交时间</strong><small>可由边缘服务记录，本原型模拟</small></div></li>
+   <li><span class="st ok">✓</span><div><strong>异常项强制拍照存证</strong><small>表单已实现强制校验</small></div></li>
+   <li><span class="st wait">?</span><div><strong>防重放 / 防克隆凭证</strong><small>普通 NDEF URL 不足以防复制，需动态凭证方案 —— 未证明</small></div></li></ul>
+  <p style="margin-top:10px">只有第一条和第四条落实，「必须到现场」才真正成立。仅靠登录与时间，仍无法排除远程代打卡。</p></div>`;}
+
+// ================= 碰一碰：选标签 =================
+function tapSheet(){const rows=db.labels.filter(l=>l.asset).map(l=>{const a=asset(l.asset),st=checkState(a);
+ return `<button class="row" data-act="open" data-id="${a.id}" style="width:100%;border:0;background:none;text-align:left">
+  <span class="mark ${st==='overdue'||st==='never'?'bad':st==='due'?'warn':''}">◎</span>
+  <span class="row-main"><strong>${esc(a.name)}</strong><small>${esc(l.mac)} · ${esc(path(a.dir))}</small></span>
+  ${pill(CHECK[st][0],CHECK[st][1])}</button>`;}).join('');
+ sheet('模拟碰一碰',`<div class="hint bad"><strong>这一步在真机上是碰标签，不是点列表。</strong><br>NFC 免密唤起要求标签内置 NFC Forum Type 2 芯片并预写设备身份，而候选机 STag29AQ 的 NFC 是可选项。此处列出标签仅为演示后续流程。</div>${rows}`);}
+
+// ================= 点检表单 =================
+function formView(){const a=current,l=labelFor(a),items=checklist(a);
+ if(!form)form={results:items.map(()=>'ok'),note:'',photo:false,user:'张工',fault:false};
+ const bad=form.results.some(r=>r==='bad');
+ return `<div class="screen-head"><h2>${esc(a.name)}</h2><p>${esc(a.code)} · ${esc(a.model)} · ${esc(path(a.dir))}</p></div>
+ <div class="card"><div class="row" style="padding-top:0">
+   <span class="row-main"><strong>当前状态</strong><small>${esc(stateNote(a))}</small></span>${pill(CHECK[checkState(a)][0],CHECK[checkState(a)][1])}</div>
+  <div class="row"><span class="row-main"><strong>责任班组 / 周期</strong><small>${esc(a.team)} · 每 ${a.cycle} 天</small></span></div>
+  <div class="row"><span class="row-main"><strong>关联标签</strong><small>${l?esc(l.mac):'未绑定'}</small></span>${l?pill(l.online?'在线':'离线',l.online?'':'neutral'):pill('未绑定','neutral')}</div></div>
+ <div class="card"><h3>检查项 · 按设备类型加载</h3>
+  ${items.map((t,i)=>`<label class="check"><input type="checkbox" data-ck="${i}" ${form.results[i]==='ok'?'checked':''}>
+   <span class="ck-main">${esc(t)}</span>
+   <button type="button" class="ck-bad ${form.results[i]==='bad'?'on':''}" data-act="mark-bad" data-id="${i}">异常</button></label>`).join('')}</div>
+ ${bad?`<div class="card"><h3>异常存证 <span class="pill bad">必填</span></h3>
+  <label class="field"><span>异常描述</span><textarea data-fld="note" placeholder="简要描述异常现象、位置与初步判断">${esc(form.note)}</textarea></label>
+  <div class="photo ${form.photo?'on':''}" data-act="photo" role="button" tabindex="0">${form.photo?'✓ 已拍照存证（模拟）':'＋ 点击模拟拍照存证'}</div>
+  <label class="check" style="margin-top:12px"><input type="checkbox" data-fld="fault" ${form.fault?'checked':''}><span class="ck-main">转报修工单，并推送维保班组长</span></label></div>`:''}
+ <label class="field"><span>执行人</span><input data-fld="user" value="${esc(form.user)}"></label>
+ <div class="hint">${mb.online?'当前在线：提交后直接上报边缘服务，并尝试调度标签刷屏。':'当前离线：提交后先存在手机本地，回到有信号处再补传。'}</div>
+ <button class="btn primary" data-act="submit">提交点检</button>
+ <button class="btn" data-act="home">返回</button>`;}
+
+// ================= 提交 =================
+function submitForm(){const a=current,items=checklist(a);
+ const bad=form.results.some(r=>r==='bad');
+ if(bad&&!form.note.trim())return toast('异常项必须填写描述');
+ if(bad&&!form.photo)return toast('异常项必须拍照存证');
+ if(!form.user.trim())return toast('请填写执行人');
+ const rec={id:uid('q'),asset:a.id,user:form.user.trim(),time:db.demoNow,
+  result:bad?'abnormal':'normal',note:form.note.trim(),photo:form.photo,fault:form.fault,
+  items:items.map((t,i)=>({t,ok:form.results[i]==='ok'})),
+  savedLocal:true,uploaded:false,screen:null};
+ mb.queue.unshift(rec);
+ if(mb.online)upload(rec);
+ persist();doneRec=rec;form=null;go('done');}
+
+// 补传：把手机本地记录写入业务数据。三个状态必须分开，
+// 「手机已保存」不等于「边缘服务已接收」，更不等于「标签已刷新」。
+function upload(rec){const a=asset(rec.asset);if(!a)return;
+ db.inspections.unshift({id:uid('ins'),asset:rec.asset,user:rec.user,time:rec.time,result:rec.result,note:rec.note,photo:rec.photo});
+ a.lastCheck=rec.time;
+ if(rec.fault)a.fault=true;
+ const l=labelFor(a);
+ if(l){l.version++;                       // 倒计时变了 → 标签内容待更新
+  if(l.online){l.published=l.version;rec.screen='refreshed';} // 在线才谈得上刷屏成功
+  else rec.screen='pending';}
+ else rec.screen='nolabel';
+ rec.uploaded=true;rec.uploadTime=db.demoNow;
+ (db.logs=db.logs||[]).unshift({time:db.demoNow,action:'移动端点检补传',detail:a.name+' · '+(rec.result==='abnormal'?'异常':'正常')});
+ persist();}
+
+function doneView(){const r=doneRec,a=asset(r.asset),l=labelFor(a);
+ const refreshed=r.screen==='refreshed';
+ return `<div class="done-wrap"><div class="done-ring">${r.uploaded?'✓':'⏱'}</div>
+  <h2 style="font-size:19px;font-weight:640">${r.uploaded?'点检已完成':'已存到手机本地'}</h2>
+  <p style="font-size:11.5px;color:var(--muted);margin-top:5px">${esc(a.name)} · ${esc(r.time)}</p></div>
+ <div class="card"><h3>标签现场反馈</h3>
+  <div class="eink ${refreshed?'':'overdue'}">${refreshed?'':'<div class="bar">⚠ 逾期未检！已超期 '+overdueH(a)+' 小时</div>'}
+   <div class="top"><span>设备资产</span><span>${esc(a.code)}</span></div>
+   <div class="nm">${esc(a.name)}</div>
+   <div class="sub">${refreshed?'下次点检 '+esc(dueText(a)):'内容待更新'}</div>
+   <div class="btm"><span>${esc(dir(a.dir)?.name||'')}</span><span>${esc(a.team)}</span></div></div>
+  <div class="led"><i class="${refreshed?'green':r.uploaded?'amber':''}"></i>
+   ${refreshed?'绿灯常亮 3 秒 · 现场物理核销反馈':r.uploaded?'标签离线，点灯与刷屏指令待下发':'尚未上报，标签无任何变化'}</div></div>
+ <div class="card"><h3>闭环状态 · 三段必须分开看</h3>
+  <ul class="chain">
+   <li><span class="st ok">✓</span><div><strong>手机本地已保存</strong><small>${esc(r.time)} · 断网也不会丢</small></div></li>
+   <li><span class="st ${r.uploaded?'ok':'wait'}">${r.uploaded?'✓':'…'}</span><div><strong>边缘服务已接收</strong><small>${r.uploaded?esc(r.uploadTime)+' · 已写入点检流水':'等待恢复网络后自动补传'}</small></div></li>
+   <li><span class="st ${refreshed?'ok':'wait'}">${refreshed?'✓':'…'}</span><div><strong>标签已刷新 / 已点灯</strong><small>${refreshed?'标签在线，刷屏回执已确认':l?'标签当前离线，已标记为待更新；恢复在线后需重新下发':'该设备未绑定标签'}</small></div></li></ul>
+  <p style="margin-top:10px">${refreshed?'三段都完成，才叫一次真正闭环的点检。':'前面完成不代表后面完成 —— 「已提交」不等于现场那块屏已经变了。'}</p></div>
+ ${r.fault?`<div class="hint bad"><strong>已转报修工单</strong><br>该设备标记为「故障报修中」，派工消息与现场照片已推送给维保班组长（模拟）。</div>`:''}
+ <button class="btn primary" data-act="home">返回今日点检</button>`;}
+
+// ================= 补传队列 =================
+function queueView(){const q=mb.queue;
+ const rows=q.map(r=>{const a=asset(r.asset);
+  return `<div class="row"><span class="mark ${r.uploaded?'':'warn'}">${r.uploaded?'✓':'↑'}</span>
+   <span class="row-main"><strong>${esc(a?.name||'已删除设备')}</strong>
+    <small>${esc(r.time)} · ${esc(r.user)} · ${r.result==='abnormal'?'异常':'正常'}${r.photo?' · 已拍照':''}</small>
+    <small>${r.uploaded?(r.screen==='refreshed'?'已上报 · 标签已刷新':r.screen==='pending'?'已上报 · 标签离线，待刷新':'已上报 · 未绑定标签'):'仅存于手机本地'}</small></span>
+   ${r.uploaded?pill('已上报'):pill('待补传','warn')}</div>`;}).join('');
+ const pend=q.filter(r=>!r.uploaded).length;
+ return `<div class="screen-head"><h2>离线队列</h2><p>手机本地缓存 · 共 ${q.length} 条，其中 ${pend} 条待补传</p></div>
+ <div class="hint">手机离线队列与网关离线缓存是<b>两个互不相关的缓存域</b>，各自有记录 ID、版本与补传状态，正式方案必须分别设计幂等键与冲突规则。</div>
+ <div class="card"><div class="row" style="padding-top:0">
+   <span class="row-main"><strong>网络状态</strong><small>${mb.online?'在线 · 提交后立即上报':'离线 · 提交先存本地'}</small></span>
+   <button class="btn" style="width:auto;padding:8px 13px" data-act="net">${mb.online?'切到离线':'恢复网络'}</button></div></div>
+ ${pend&&mb.online?`<button class="btn primary" data-act="flush" style="margin-bottom:12px">立即补传 ${pend} 条</button>`:''}
+ <div class="card"><h3>记录</h3>${rows||'<p class="empty">暂无记录</p>'}</div>
+ ${q.length?`<button class="btn" data-act="clearq">清空队列（仅清手机本地）</button>`:''}`;}
+
+// ================= 需求对照 =================
+function reqView(){const ids=Object.keys(DOC.requirements);
+ return `<div class="screen-head"><h2>需求对照</h2><p>产品文档 ${esc(DOC.version)} / 5.6 移动端 · 共 ${ids.length} 条</p></div>
+ <div class="hint warn">标「依赖未落实」的需求，原型可以走通界面流程，但真机上能否成立取决于标签 NFC 是否落实。</div>
+ <div class="card">${ids.map(id=>{const r=DOC.requirements[id],s=DOC.status[id]||'plan';
+  const tag=s==='ok'?'<span class="tag">原型可演示</span>':s==='dep'?'<span class="tag dep">依赖未落实</span>':'<span class="tag plan">原型未实现</span>';
+  return `<div class="req-item"><span class="no">${esc(r.section)} · ${String(r.no).padStart(2,'0')}</span><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p>${tag}</div>`;}).join('')}</div>
+ <div class="card"><h3>本原型没做到的</h3><p>真实 NFC 唤起、真实拍照与图片上传、后台定时补传、工单状态机、与 MES/EAM 的对接。屏幕与 LED 的「变屏变灯」是界面模拟，不连接现场设备。</p></div>`;}
+
+// ================= 渲染 =================
+const TABS=[['home','今日','◎'],['queue','队列','↑'],['req','需求','☰']];
+function render(){
+ $('#netbar').className='phone-net'+(mb.online?'':' off');
+ $('#netbar').innerHTML=`<i></i>${mb.online?'在线':'离线'} · ${esc(db.ship.code)}`;
+ const pend=mb.queue.filter(r=>!r.uploaded).length;
+ $('#tabbar').innerHTML=TABS.map(([v,n,ic])=>`<button data-act="tab" data-id="${v}" class="${view===v||(v==='home'&&['form','done'].includes(view))?'active':''}" ${view===v?'aria-current="page"':''}><strong>${ic}</strong>${n}${v==='queue'&&pend?'<span class="dot"></span>':''}</button>`).join('');
+ $('#screen').innerHTML=view==='form'?formView():view==='done'?doneView():view==='queue'?queueView():view==='req'?reqView():home();
+}
+
+// ================= 事件 =================
+function sheet(title,body){$('#sheet-title').textContent=title;$('#sheet-body').innerHTML=body;$('#sheet').hidden=false;sheetOpen=true;}
+function closeSheet(){$('#sheet').hidden=true;sheetOpen=false;}
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-act]');if(!el)return;
+ const {act,id}=el.dataset;
+ switch(act){
+  case 'tab':closeSheet();go(id);break;
+  case 'tap':tapSheet();break;
+  case 'open':closeSheet();current=asset(id);form=null;go('form');break;
+  case 'home':go('home');break;
+  case 'queue':go('queue');break;
+  case 'mark-bad':{const i=+id;form.results[i]=form.results[i]==='bad'?'ok':'bad';render();break;}
+  case 'photo':form.photo=!form.photo;render();break;
+  case 'submit':submitForm();break;
+  case 'net':mb.online=!mb.online;if(mb.online){const n=mb.queue.filter(r=>!r.uploaded);n.forEach(upload);if(n.length)toast(`网络恢复，已自动补传 ${n.length} 条`);else toast('网络已恢复');}else toast('已切到离线模式');persist();render();break;
+  case 'flush':{const n=mb.queue.filter(r=>!r.uploaded);n.forEach(upload);persist();render();toast(`已补传 ${n.length} 条`);break;}
+  case 'clearq':mb.queue=[];persist();render();toast('已清空手机本地队列（不影响已上报的数据）');break;
+  case 'sheet-close':closeSheet();break;
+ }
+});
+document.addEventListener('change',e=>{
+ const ck=e.target.dataset.ck, fld=e.target.dataset.fld;
+ if(ck!==undefined&&form){form.results[+ck]=e.target.checked?'ok':'bad';render();}
+ if(fld&&form){form[fld]=e.target.type==='checkbox'?e.target.checked:e.target.value;if(fld==='fault')render();}
+});
+document.addEventListener('input',e=>{const fld=e.target.dataset.fld;if(fld&&form&&e.target.type!=='checkbox')form[fld]=e.target.value;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheetOpen)closeSheet();
+ if(e.key==='Enter'&&e.target.classList?.contains('photo')){form.photo=!form.photo;render();}});
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet();});
+$('#clock').textContent=db.demoNow.slice(11,16);
+render();
+</script>
+</body></html>
